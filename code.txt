@@ -1,0 +1,208 @@
+
+
+# from fastapi import FastAPI, Request
+# from fastapi.middleware.cors import CORSMiddleware
+# from pydantic import BaseModel
+# import os
+# from dotenv import load_dotenv
+# import google.generativeai as genai
+
+# # Load .env
+# load_dotenv()
+
+# # Configure Gemini
+# genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+# model = genai.GenerativeModel('gemini-2.5-flash')
+
+# # FastAPI app
+# app = FastAPI()
+
+# # CORS setup for frontend communication
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  # Replace with frontend URL in production
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
+# # Input model
+# class CodeInput(BaseModel):
+#     code: str
+#     action: str  # "run", "tc", "sc", or "optimal"
+
+# # Utility functions
+# def compiler(code):
+#     prompt = f"""
+# You are a professional programming assistant.
+
+# 1. Find the output of the given code.
+# 2. If the code contains any **errors**, identify them along with the **line number** where they occur.
+# 3. Don't provide explanation. Just return:
+# - Output: (if there is no error)
+# - Error: (if any)
+
+# Code:
+# {code}
+# """
+#     return model.generate_content(prompt).text
+
+# def time_complexity(code):
+#     prompt = f"""
+# You are a professional programming assistant.
+# 1. Determine the **time complexity** of the code.
+# 2. Provide **optimal time complexity** if possible.
+# 3. No explanation.
+
+# Code:
+# {code}
+# """
+#     return model.generate_content(prompt).text
+
+# def space_complexity(code):
+#     prompt = f"""
+# You are a professional programming assistant.
+# 1. Determine the **space complexity** of the code.
+# 2. Provide **optimal space complexity** if possible.
+# 3. No explanation.
+
+# Code:
+# {code}
+# """
+#     return model.generate_content(prompt).text
+
+# def optimal(code):
+#     prompt = f"""
+# You are a professional programming assistant.
+# 1. Provide an **optimal version** of the code.
+# 2. Mention **time complexity**.
+# 3. No explanation.
+
+# Code:
+# {code}
+# """
+#     return model.generate_content(prompt).text
+
+# # Main endpoint
+# @app.post("/api/execute")
+# async def execute_code(data: CodeInput):
+#     code = data.code
+#     action = data.action.lower()
+
+#     if action == "run":
+#         result = compiler(code)
+#     elif action == "tc":
+#         result = time_complexity(code)
+#     elif action == "sc":
+#         result = space_complexity(code)
+#     elif action == "optimal":
+#         result = optimal(code)
+#     else:
+#         result = "❌ Invalid action."
+
+#     return {"result": result}
+
+
+
+
+
+# import os
+# from dotenv import load_dotenv
+# import google.generativeai as genai
+
+
+# load_dotenv()
+
+
+# genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+
+# model = genai.GenerativeModel('gemini-2.5-flash')
+
+# def readcode(filepath):
+#     """Read code from a file."""
+#     try:
+#         with open(filepath, "r") as f:
+#             return f.read()
+#     except FileNotFoundError:
+#         print("❌ Error: code file not found.")
+#         exit(1)
+
+
+# def compiler(code):
+#     prompt = f"""
+# You are a professional programming assistant.
+
+# 1. Find the output of the given code.
+
+# 2. If the code contains any **errors**, identify them along with the **line number** where they occur.
+
+# 3. Dont provide any Explaination just provide the Output
+
+# Code:
+# {code}
+
+# Your explanation should be structured as:
+# - Output: (if there is no error)
+# - Error: (if the code has a mistake)
+# """
+#     try:
+#         response = model.generate_content(prompt)
+#         return response.text
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         exit(1)
+
+
+# def time_complexity(code):
+#     prompt = f""" 
+# You are a professional programming assistant.
+
+# 1. Determine the **time complexity** of the given code.
+
+# 2. If possible, also provide the **optimal time complexity**.
+
+# 3. Dont provide Explaination just provide time complexity
+# Code:
+# {code}
+
+# Your explanation should be structured as:
+# - Time Complexity: (actual time complexity)
+# - Optimal Time Complexity: (if any improvements are possible)
+# """
+#     try:
+#         response = model.generate_content(prompt)
+#         return response.text
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         exit(1)
+
+
+# def optimal(code):
+#     prompt = f""" 
+# You are a professional programming assistant.
+
+# 1. Provide an **optimal version** of the given code. Improve its performance, readability, or efficiency if possible.
+
+# 2. Identify the **time complexity** of the code.
+
+# 3. Dont Explain the code just provide the Optimal version
+# Code:
+# {code}
+
+# Your explanation should be structured as:
+# - Optimal Code:
+
+# """
+#     try:
+#         response = model.generate_content(prompt)
+#         return response.text
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         exit(1)
+
+# if __name__ == '__main__':
+#     code=readcode("code.txt")
+#     r=optimal(code)
+
+#     print(r)
