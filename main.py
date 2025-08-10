@@ -58,6 +58,7 @@ app.add_middleware(
 class CodeInput(BaseModel):
     code: str
 
+
 @app.post("/api/run")
 def run_code(data: CodeInput):
     prompt = f"""
@@ -66,6 +67,8 @@ You are a professional programming assistant.
 2. If the code contains any **errors**, identify them along with the **line number**.
 3. Dont provide any explanation, just the output.
 4. If there is an error please provide a 2 line explaination of that error along with solution **Error solving**  
+5. If input is given (input is given in form of comments in last line after the code) take that input and genarate corresponding output.
+6. If input is not provided genarate concurrent input and provide corresponding output.
 
 Code:
 {data.code}
@@ -103,6 +106,7 @@ def optimal_code(data: CodeInput):
 1. Provide an **optimal version** of the given code.
 2. Also include the time complexity.
 3. No explanation, just optimal code.
+4. Note: please remove comments while you are genrating an optimal solution. 
 
 Code:
 {data.code}
